@@ -60,7 +60,14 @@ def _interpolate_env(template: str) -> str:
     """
 
     def _replace(match: "re.Match[str]") -> str:
-        # A missing variable keeps its original ``{{ env.NAME }}`` text.
+        """Resolve a single matched reference, keeping unset variables verbatim.
+
+        Args:
+            match: the matched ``{{ env.NAME }}`` reference.
+
+        Returns:
+            The environment value, or the original text when the variable is unset.
+        """
         return os.environ.get(match.group(1), match.group(0))
 
     return _ENV_REFERENCE.sub(_replace, template)
